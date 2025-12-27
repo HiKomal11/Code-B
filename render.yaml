@@ -1,0 +1,32 @@
+services:
+  - type: web
+    name: ngo-cms-backend
+    env: python
+    buildCommand: |
+      pip install -r requirements.txt
+      python manage.py migrate
+      python manage.py collectstatic --noinput
+      python manage.py create_admin   # custom management command to auto-create superuser
+    startCommand: gunicorn ngo_cms.wsgi:application
+    envVars:
+      - key: DB_NAME
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        sync: false
+      - key: SECRET_KEY
+        sync: false
+      - key: DEBUG
+        value: False
+      # ✅ Add admin credentials as environment variables for secure superuser creation
+      - key: DJANGO_SUPERUSER_USERNAME
+        value: admin
+      - key: DJANGO_SUPERUSER_EMAIL
+        value: admin@example.com
+      - key: DJANGO_SUPERUSER_PASSWORD
+        value: Admin@123

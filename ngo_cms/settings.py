@@ -10,8 +10,11 @@ import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# ✅ Always load SECRET_KEY from .env via python-decouple
+SECRET_KEY = config('SECRET_KEY')
+
 # NGO Branding
-PROJECT_NAME = "Helping Hands Foundation"   # ✅ New NGO name
+PROJECT_NAME = "Helping Hands Foundation"   # NGO name
 SITE_NAME = PROJECT_NAME
 SITE_TITLE = f"{PROJECT_NAME} Portal"
 
@@ -19,20 +22,16 @@ LOCALE_PATHS = [
     os.path.join(BASE_DIR, "locale"),
 ]
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-x0nqmv+(&bp^jt_jf*y@jqny6jla=t25_pw@2a_gio5w$(ry6='
-
-DEBUG = False
-ALLOWED_HOSTS =  [
+DEBUG = config('DEBUG', default=False, cast=bool)
+ALLOWED_HOSTS = [
     'helping-hands-foundation.onrender.com',
     'ngo-cms-backend-5oez.onrender.com',
+    'code-b.onrender.com',
     'localhost',
     '127.0.0.1',
     '[::1]',
-    '*',  # optional: allow all hosts during testing
+    '*',  # optional during testing
 ]
-
-
 
 
 # Application definition
@@ -73,9 +72,17 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'ngo_cms.urls'
-CORS_ALLOWED_ORIGINS = [ 'https://ngo-cms-backend-5oez.onrender.com',
-                        'http://localhost:3000' ]
+
+CORS_ALLOWED_ORIGINS = [
+    'https://ngo-cms-backend-5oez.onrender.com',
+    'http://localhost:3000',
+    'https://shimmering-elf-00b7b2.netlify.app',
+    'https://code-b.onrender.com',
+]
+
+
 AUTH_USER_MODEL = 'accounts.CustomUser'
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -93,22 +100,22 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'ngo_cms.wsgi.application'
 
-# Database
+# ✅ Database settings via decouple
 DATABASES = {
-   
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.environ.get('DB_NAME', 'ngo_db'),       
-        'USER': os.environ.get('DB_USER', 'root'),         
-        'PASSWORD': os.environ.get('DB_PASSWORD', 'Komal@2006'),  
-        'HOST': os.environ.get('DB_HOST', '127.0.0.1'),  
-        'PORT': os.environ.get('DB_PORT', '3306'),       
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST'),
+        'PORT': config('DB_PORT', default='3306'),
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+        },
     }
 }
 
-
-
-# Payment Gateway Keys
+# ✅ Payment Gateway Keys via decouple
 RAZORPAY_KEY_ID = config("RAZORPAY_KEY_ID")
 RAZORPAY_KEY_SECRET = config("RAZORPAY_KEY_SECRET")
 STRIPE_SECRET_KEY = config("STRIPE_SECRET_KEY")
@@ -129,16 +136,15 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
-USE_L10N = True
 USE_TZ = True
 
 # Static & Media files
 STATIC_URL = 'static/'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-# Default primary key field type
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Supported Languages
