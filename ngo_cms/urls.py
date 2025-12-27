@@ -5,6 +5,11 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 
+from core.views import ping_db   # import the view
+
+
+
+
 from volunteers.views import VolunteerViewSet
 from payments.views import DonationViewSet, home
 from core.views import contact_message
@@ -47,6 +52,7 @@ urlpatterns = [
     path("api/", include("core.urls")),
     path("api/", include("accounts.urls")),
     path("health/", health_check, name="health_check"),
+    path("ping/", ping_db),   
 
 
 ]

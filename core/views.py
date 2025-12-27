@@ -8,6 +8,16 @@ from rest_framework import status
 from .models import ContactMessage
 from rest_framework.permissions import AllowAny
 
+from django.http import HttpResponse
+from django.contrib.auth import get_user_model
+
+def ping_db(request):
+    try:
+        User = get_user_model()
+        count = User.objects.count()
+        return HttpResponse(f"✅ DB is connected. Users in DB: {count}")
+    except Exception as e:
+        return HttpResponse(f"❌ DB error: {str(e)}")
 
 def contact_message(request):
     name = request.data.get("name")
