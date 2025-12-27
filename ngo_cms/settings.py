@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-x0nqmv+(&bp^jt_jf*y@jqny6jla=t25_pw@2a_gio5w$(ry6=
 DEBUG = False
 ALLOWED_HOSTS = [
     'helping-hands-foundation.onrender.com',
-    'helping-hands-foundation.netlify.app',
+    
     'localhost'
 ]
 
@@ -68,7 +68,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'ngo_cms.urls'
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOWED_ORIGINS = [ 'https://helping-hands-foundation.netlify.app',
+                        'http://localhost:3000' ]
 AUTH_USER_MODEL = 'accounts.CustomUser'
 TEMPLATES = [
     {
@@ -89,15 +90,18 @@ WSGI_APPLICATION = 'ngo_cms.wsgi.application'
 
 # Database
 DATABASES = {
+   
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'ngo_db',
-        'USER': 'root',
-        'PASSWORD': 'Komal@2006',
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
+        'NAME': os.environ.get('DB_NAME', 'ngo_db'),       
+        'USER': os.environ.get('DB_USER', 'root'),         
+        'PASSWORD': os.environ.get('DB_PASSWORD', 'Komal@2006'),  
+        'HOST': os.environ.get('DB_HOST', '127.0.0.1'),  
+        'PORT': os.environ.get('DB_PORT', '3306'),       
     }
 }
+
+
 
 # Payment Gateway Keys
 RAZORPAY_KEY_ID = config("RAZORPAY_KEY_ID")
@@ -128,6 +132,7 @@ STATIC_URL = 'static/'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
