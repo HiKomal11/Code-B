@@ -23,11 +23,16 @@ LOCALE_PATHS = [
 SECRET_KEY = 'django-insecure-x0nqmv+(&bp^jt_jf*y@jqny6jla=t25_pw@2a_gio5w$(ry6='
 
 DEBUG = False
-ALLOWED_HOSTS = [
+ALLOWED_HOSTS =  [
     'helping-hands-foundation.onrender.com',
-    
-    'localhost'
+    'ngo-cms-backend-5oez.onrender.com',
+    'localhost',
+    '127.0.0.1',
+    '[::1]',
+    '*',  # optional: allow all hosts during testing
 ]
+
+
 
 
 # Application definition
@@ -68,7 +73,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'ngo_cms.urls'
-CORS_ALLOWED_ORIGINS = [ 'https://helping-hands-foundation.netlify.app',
+CORS_ALLOWED_ORIGINS = [ 'https://ngo-cms-backend-5oez.onrender.com',
                         'http://localhost:3000' ]
 AUTH_USER_MODEL = 'accounts.CustomUser'
 TEMPLATES = [
