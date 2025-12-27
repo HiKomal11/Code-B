@@ -4,3 +4,4 @@ django-cors-headers==4.3.1
 gunicorn==23.0.0
 whitenoise==6.11.0
 mysqlclient==2.2.4
+pymysql
