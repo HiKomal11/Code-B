@@ -12,6 +12,12 @@ from blog.views import blog_list, blog_detail , BlogPostViewSet
 from partner.views import PartnerInquiryViewSet
 from core.views import SubscriptionViewSet, CampaignParticipationViewSet, CampaignViewSet, MediaViewSet
 from projects.views import WorkAreaViewSet
+from django.http import HttpResponse
+
+def health_check(request):
+    return HttpResponse("OK")
+
+
 
 router = DefaultRouter()
 router.register(r'volunteers', VolunteerViewSet, basename='volunteers')
@@ -40,6 +46,7 @@ urlpatterns = [
     path('api/', include('projects.urls')),
     path("api/", include("core.urls")),
     path("api/", include("accounts.urls")),
+    path("health/", health_check, name="health_check"),
 
 
 ]
