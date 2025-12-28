@@ -9,11 +9,8 @@ services:
       pip install -r requirements.txt
 
     startCommand: |
-      echo "🚀 Starting migrations..." && \
       python manage.py migrate --noinput && \
-      echo "✅ Migrations applied" && \
       python manage.py create_admin || true && \
-      echo "👤 Superuser check complete" && \
       gunicorn ngo_cms.wsgi:application
 
     envVars:
