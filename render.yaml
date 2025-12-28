@@ -2,6 +2,7 @@ services:
   - type: web
     name: ngo-cms-backend
     env: python
+    pythonVersion: 3.11
     buildCommand: |
       apt-get update && apt-get install -y libjpeg-dev zlib1g-dev && \
       pip install --upgrade pip setuptools wheel && \
@@ -9,11 +10,11 @@ services:
 
     startCommand: |
       echo "🚀 Starting migrations..." && \
-      poetry run python manage.py migrate --noinput && \
+      python manage.py migrate --noinput && \
       echo "✅ Migrations applied" && \
-      poetry run python manage.py create_admin || true && \
+      python manage.py create_admin || true && \
       echo "👤 Superuser check complete" && \
-      poetry run gunicorn ngo_cms.wsgi:application
+      gunicorn ngo_cms.wsgi:application
 
     envVars:
       - key: DB_NAME
