@@ -11,6 +11,8 @@ services:
       python manage.py create_admin || true && \
       gunicorn ngo_cms.wsgi:application
     envVars:
+      - key: RENDER_PYTHON_PACKAGE_MANAGER
+        value: pip
       - key: DB_NAME
         value: ngo_db_hfxj
       - key: DB_USER
