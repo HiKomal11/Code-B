@@ -7,9 +7,10 @@ services:
         pip install -r requirements.txt
 
     startCommand: |
-      python manage.py migrate --noinput && \
-      python manage.py create_admin || true && \
-      gunicorn ngo_cms.wsgi:application
+      ./venv/bin/python manage.py migrate --noinput && \
+      ./venv/bin/python manage.py create_admin || true && \
+      ./venv/bin/gunicorn ngo_cms.wsgi:application
+
     envVars:
       - key: RENDER_PYTHON_PACKAGE_MANAGER
         value: pip
