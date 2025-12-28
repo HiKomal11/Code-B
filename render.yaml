@@ -4,26 +4,25 @@ services:
     env: python
     buildCommand: |
       pip install -r requirements.txt
-      python manage.py migrate
+      python manage.py migrate --noinput
       python manage.py collectstatic --noinput
-      python manage.py create_admin   # custom management command to auto-create superuser
+      python manage.py create_admin   # or createsuperuser --noinput if no custom command
     startCommand: gunicorn ngo_cms.wsgi:application
     envVars:
       - key: DB_NAME
-        sync: false
+        value: ngo_db_hfxj
       - key: DB_USER
-        sync: false
+        value: ngo_db_hfxj_user
       - key: DB_PASSWORD
-        sync: false
+        value: q53HqXMEwla70tPiSLMCNj0Ospp5jTWO
       - key: DB_HOST
-        sync: false
+        value: dpg-d57vve9r0fns73dlodcg-a.virginia-postgres.render.com  # ✅ external hostname
       - key: DB_PORT
-        sync: false
+        value: 5432
       - key: SECRET_KEY
-        sync: false
+        value: django-insecure-x0nqmv+(&bp^jt_jf*y@jqny6jla=t25_pw@2a_gio5w$(ry6=
       - key: DEBUG
         value: False
-      # ✅ Add admin credentials as environment variables for secure superuser creation
       - key: DJANGO_SUPERUSER_USERNAME
         value: admin
       - key: DJANGO_SUPERUSER_EMAIL
