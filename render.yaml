@@ -4,10 +4,15 @@ services:
     env: python
     buildCommand: |
       pip install -r requirements.txt
-      python manage.py migrate --noinput
+      # ✅ Apply migrations first, fail fast if they don’t run
+      python manage.py migrate --noinput || exit 1
+      # ✅ Collect static files
       python manage.py collectstatic --noinput
-      python manage.py create_admin   # or createsuperuser --noinput if no custom command
-    startCommand: gunicorn ngo_cms.wsgi:application
+      # ✅ Create superuser only after migrations succeed
+      python manage.py create_admin   # or: python manage.py createsuperuser --noinput
+    startCommand: |
+      # ✅ Ensure migrations are applied again at startup (safety net)
+      python manage.py migrate --noinput && gunicorn ngo_cms.wsgi:application
     envVars:
       - key: DB_NAME
         value: ngo_db_hfxj
@@ -16,7 +21,7 @@ services:
       - key: DB_PASSWORD
         value: q53HqXMEwla70tPiSLMCNj0Ospp5jTWO
       - key: DB_HOST
-        value: dpg-d57vve9r0fns73dlodcg-a.virginia-postgres.render.com  # ✅ external hostname
+        value: dpg-d57vve9r0fns73dlodcg-a.virginia-postgres.render.com   # ✅ external hostname
       - key: DB_PORT
         value: 5432
       - key: SECRET_KEY
