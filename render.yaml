@@ -8,9 +8,9 @@ services:
       pip install -r requirements.txt
 
     startCommand: |
-      python manage.py migrate --noinput && \
-      python manage.py create_admin || true && \
-      gunicorn ngo_cms.wsgi:application
+      poetry run python manage.py migrate --noinput && \
+      poetry run python manage.py create_admin || true && \
+      poetry run gunicorn ngo_cms.wsgi:application
 
     envVars:
       - key: DB_NAME
