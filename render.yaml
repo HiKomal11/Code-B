@@ -2,17 +2,15 @@ services:
   - type: web
     name: ngo-cms-backend
     env: python
-    pythonVersion: 3.11
+    runtime: python3
     buildCommand: |
       apt-get update && apt-get install -y libjpeg-dev zlib1g-dev && \
       pip install --upgrade pip setuptools wheel && \
       pip install -r requirements.txt
-
     startCommand: |
       python manage.py migrate --noinput && \
       python manage.py create_admin || true && \
       gunicorn ngo_cms.wsgi:application
-
     envVars:
       - key: DB_NAME
         value: ngo_db_hfxj
@@ -23,11 +21,11 @@ services:
       - key: DB_HOST
         value: dpg-d57vve9r0fns73dlodcg-a.virginia-postgres.render.com
       - key: DB_PORT
-        value: 5432
+        value: "5432"
       - key: SECRET_KEY
-        value: django-insecure-x0nqmv+(&bp^jt_jf*y@jqny6jla=t25_pw@2a_gio5w$(ry6=
+        value: "django-insecure-x0nqmv+(&bp^jt_jf*y@jqny6jla=t25_pw@2a_gio5w$(ry6="
       - key: DEBUG
-        value: False
+        value: "False"
       - key: DJANGO_SUPERUSER_USERNAME
         value: admin
       - key: DJANGO_SUPERUSER_EMAIL
