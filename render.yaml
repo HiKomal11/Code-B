@@ -8,8 +8,11 @@ services:
       pip install -r requirements.txt
 
     startCommand: |
+      echo "🚀 Starting migrations..." && \
       poetry run python manage.py migrate --noinput && \
+      echo "✅ Migrations applied" && \
       poetry run python manage.py create_admin || true && \
+      echo "👤 Superuser check complete" && \
       poetry run gunicorn ngo_cms.wsgi:application
 
     envVars:
