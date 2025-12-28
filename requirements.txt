@@ -19,3 +19,4 @@ packaging==23.2
 gunicorn==21.2.0
 
 psycopg[binary]
+Pillow==10.0.1
