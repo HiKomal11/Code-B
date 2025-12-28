@@ -3,14 +3,13 @@ services:
     name: ngo-cms-backend
     env: python
     buildCommand: |
-        pip install --upgrade pip setuptools wheel && \
-        pip install -r requirements.txt
-
+      pip install --upgrade pip setuptools wheel && \
+      pip install -r requirements.txt && \
+      python manage.py collectstatic --noinput
     startCommand: |
-      ./venv/bin/python manage.py migrate --noinput && \
-      ./venv/bin/python manage.py create_admin || true && \
-      ./venv/bin/gunicorn ngo_cms.wsgi:application
-
+      python manage.py migrate --noinput && \
+      python manage.py create_admin || true && \
+      gunicorn ngo_cms.wsgi:application
     envVars:
       - key: RENDER_PYTHON_PACKAGE_MANAGER
         value: pip
