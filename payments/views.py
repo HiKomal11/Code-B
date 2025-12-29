@@ -18,6 +18,13 @@ def home(request):
         </a>
     """)
 
+def register_view(request):
+    return HttpResponse("Registration page placeholder")
+
+def login_view(request):
+    return HttpResponse("Login page placeholder")
+
+
 class DonationViewSet(ModelViewSet):
     queryset = Donation.objects.all().order_by("-created_at")
     serializer_class = DonationSerializer
