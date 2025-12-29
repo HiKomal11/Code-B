@@ -11,7 +11,12 @@ from .serializers import DonationSerializer, PaymentLogSerializer
 
 
 def home(request):
-    return HttpResponse("Welcome to the NGO CMS API")
+    return HttpResponse("""
+        <h2>Welcome to the NGO CMS API</h2>
+        <a href="/admin/" style="padding:10px; background:#007bff; color:white; text-decoration:none; border-radius:5px;">
+            Go to Admin Panel
+        </a>
+    """)
 
 class DonationViewSet(ModelViewSet):
     queryset = Donation.objects.all().order_by("-created_at")
