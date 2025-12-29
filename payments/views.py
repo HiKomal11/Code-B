@@ -22,6 +22,38 @@ class PaymentLogViewSet(ModelViewSet):
     queryset = PaymentLog.objects.all().order_by("-created_at")
     serializer_class = PaymentLogSerializer
 
+from django.views.decorators.csrf import csrf_exempt
+
+@csrf_exempt
+@api_view(['POST'])
+def webhook_stripe(request):
+    payload = request.body
+    sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
+    endpoint_secret = settings.STRIPE_WEBHOOK_SECRET  # set in your environment
+
+    try:
+        event = stripe.Webhook.construct_event(
+            payload, sig_header, endpoint_secret
+        )
+    except ValueError:
+        return HttpResponse(status=400)  # Invalid payload
+    except stripe.error.SignatureVerificationError:
+        return HttpResponse(status=400)  # Invalid signature
+
+    if event['type'] == 'checkout.session.completed':
+        session = event['data']['object']
+        donation_id = session.get("client_reference_id")
+        if donation_id:
+            try:
+                donation = Donation.objects.get(id=donation_id)
+                donation.status = "success"
+                donation.payment_id = session.get("payment_intent")
+                donation.provider = "stripe"
+                donation.save()
+            except Donation.DoesNotExist:
+                pass
+
+    return HttpResponse(status=200)
 
 # ✅ Razorpay
 @api_view(['POST'])
