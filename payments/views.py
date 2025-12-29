@@ -9,6 +9,7 @@ from rest_framework.viewsets import ModelViewSet
 from .models import Donation, PaymentLog
 from .serializers import DonationSerializer, PaymentLogSerializer
 
+from django.shortcuts import redirect
 
 def home(request):
     return HttpResponse("""
@@ -23,6 +24,22 @@ def register_view(request):
 
 def login_view(request):
     return HttpResponse("Login page placeholder")
+
+
+def about_view(request):
+    return HttpResponse("""
+        <h2>About Our NGO</h2>
+        <p>We are committed to education, healthcare, women empowerment, and environmental awareness.</p>
+        <a href='https://hikomal11.github.io/my-ngo-website'>Visit Full Website</a>
+    """)
+
+def contact_view(request):
+    return HttpResponse("""
+        <h2>Contact Us</h2>
+        <p>Email: support@ngo.org</p>
+        <p>Phone: +91-XXXXXXXXXX</p>
+        <a href='https://hikomal11.github.io/my-ngo-website'>Go to Website</a>
+    """)
 
 
 class DonationViewSet(ModelViewSet):
