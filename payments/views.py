@@ -10,6 +10,9 @@ from .models import Donation, PaymentLog
 from .serializers import DonationSerializer, PaymentLogSerializer
 
 
+def home(request):
+    return HttpResponse("Welcome to the NGO CMS API")
+
 class DonationViewSet(ModelViewSet):
     queryset = Donation.objects.all().order_by("-created_at")
     serializer_class = DonationSerializer
