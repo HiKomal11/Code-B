@@ -3,65 +3,57 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from django.conf import settings
 from django.conf.urls.static import static
+from django.http import HttpResponse
 
-
-from core.views import ping_db   # import the view
-
-
-
-
+from core.views import ping_db, contact_message, SubscriptionViewSet, CampaignParticipationViewSet, CampaignViewSet, MediaViewSet, auth_status
 from volunteers.views import VolunteerViewSet
 from payments.views import DonationViewSet, home
-from core.views import contact_message
-from blog.views import blog_list, blog_detail , BlogPostViewSet 
+from blog.views import BlogPostViewSet
 from partner.views import PartnerInquiryViewSet
-from core.views import SubscriptionViewSet, CampaignParticipationViewSet, CampaignViewSet, MediaViewSet, auth_status
 from projects.views import WorkAreaViewSet
-from django.http import HttpResponse
-from payments.views import register_view, login_view, about_view, contact_view, register_api, login_api, logout_api
+from payments.views import register_api, login_api, logout_api, about_view, contact_view
 
 def health_check(request):
     return HttpResponse("OK")
 
-
-
 router = DefaultRouter()
 router.register(r'volunteers', VolunteerViewSet, basename='volunteers')
 router.register(r'donations', DonationViewSet, basename='donations')
-router.register(r"partner-inquiries", PartnerInquiryViewSet, basename="partner-inquiry")
-router.register(r"subscribe", SubscriptionViewSet, basename="subscription")
-router.register(r"campaign-participation", CampaignParticipationViewSet, basename="campaign-participation")
-router.register(r"campaigns", CampaignViewSet, basename="campaign")
-router.register(r"media", MediaViewSet, basename="media")
+router.register(r'partner-inquiries', PartnerInquiryViewSet, basename='partner-inquiry')
+router.register(r'subscribe', SubscriptionViewSet, basename='subscription')
+router.register(r'campaign-participation', CampaignParticipationViewSet, basename='campaign-participation')
+router.register(r'campaigns', CampaignViewSet, basename='campaign')
+router.register(r'media', MediaViewSet, basename='media')
 router.register(r'work', WorkAreaViewSet)
-router.register(r"blog", BlogPostViewSet, basename="blog")
+router.register(r'blog', BlogPostViewSet, basename='blog')
 
 urlpatterns = [
     path('', home),  # root URL
     path('admin/', admin.site.urls),
 
-    # Router endpoints (volunteers + donations CRUD)
+    # Router endpoints
     path('api/', include(router.urls)),
 
     # Delegate to app-level urls
     path("api/payments/", include("payments.urls")),
-    path("api/volunteers/", include("volunteers.urls")),
     path("api/contact/", contact_message, name="contact_message"),
-    path("api/blog/", blog_list, name="blog_list"),
-    path("api/blog/<int:pk>/", blog_detail, name="blog_detail"),
-    path('api/', include('projects.urls')),
+    path("api/", include("projects.urls")),
     path("api/", include("core.urls")),
     path("api/", include("accounts.urls")),
+
+    # Health + diagnostics
     path("health/", health_check, name="health_check"),
-    path("ping/", ping_db),   
+    path("ping/", ping_db),
     path("api/auth/status/", auth_status, name="auth_status"),
-    path("register/", register_view),
-    path("login/", login_view),
-    path("about/", about_view), 
-    path("contact/", contact_view),
-    path("api/register/", register_api), 
-    path("api/login/", login_api), 
+
+    # Authentication API (for React frontend)
+    path("api/register/", register_api),
+    path("api/login/", login_api),
     path("api/logout/", logout_api),
+
+    # Optional static pages
+    path("about/", about_view),
+    path("contact/", contact_view),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
