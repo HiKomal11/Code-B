@@ -11,6 +11,24 @@ from rest_framework.permissions import AllowAny
 from django.http import HttpResponse
 from django.contrib.auth import get_user_model
 
+from django.shortcuts import render
+
+from django.http import JsonResponse
+
+def auth_status(request):
+    if request.user.is_authenticated:
+        return JsonResponse({"is_authenticated": True, "username": request.user.username})
+    return JsonResponse({"is_authenticated": False})
+
+def home(request):
+    if request.user.is_authenticated:
+        # If logged in, show a personalized message
+        return render(request, "core/index.html", {"username": request.user.username})
+    else:
+        # If not logged in, show login button
+        return render(request, "core/index.html")
+
+
 def ping_db(request):
     try:
         User = get_user_model()

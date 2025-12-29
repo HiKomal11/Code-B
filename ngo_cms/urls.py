@@ -15,7 +15,7 @@ from payments.views import DonationViewSet, home
 from core.views import contact_message
 from blog.views import blog_list, blog_detail , BlogPostViewSet 
 from partner.views import PartnerInquiryViewSet
-from core.views import SubscriptionViewSet, CampaignParticipationViewSet, CampaignViewSet, MediaViewSet
+from core.views import SubscriptionViewSet, CampaignParticipationViewSet, CampaignViewSet, MediaViewSet, auth_status
 from projects.views import WorkAreaViewSet
 from django.http import HttpResponse
 
@@ -53,6 +53,7 @@ urlpatterns = [
     path("api/", include("accounts.urls")),
     path("health/", health_check, name="health_check"),
     path("ping/", ping_db),   
+    path("api/auth/status/", auth_status, name="auth_status"),
 
 
 ]
