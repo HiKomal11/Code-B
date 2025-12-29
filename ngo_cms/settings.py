@@ -78,6 +78,7 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
     'https://shimmering-elf-00b7b2.netlify.app',
     'https://code-b.onrender.com',
+    'https://hikomal11.github.io',
 ]
 
 
