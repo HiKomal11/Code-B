@@ -18,7 +18,7 @@ from partner.views import PartnerInquiryViewSet
 from core.views import SubscriptionViewSet, CampaignParticipationViewSet, CampaignViewSet, MediaViewSet, auth_status
 from projects.views import WorkAreaViewSet
 from django.http import HttpResponse
-from payments.views import register_view, login_view, about_view, contact_view
+from payments.views import register_view, login_view, about_view, contact_view, register_api, login_api, logout_api
 
 def health_check(request):
     return HttpResponse("OK")
@@ -59,7 +59,9 @@ urlpatterns = [
     path("login/", login_view),
     path("about/", about_view), 
     path("contact/", contact_view),
-
+    path("api/register/", register_api), 
+    path("api/login/", login_api), 
+    path("api/logout/", logout_api),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

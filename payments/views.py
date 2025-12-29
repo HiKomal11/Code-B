@@ -8,8 +8,44 @@ from rest_framework.decorators import api_view
 from rest_framework.viewsets import ModelViewSet
 from .models import Donation, PaymentLog
 from .serializers import DonationSerializer, PaymentLogSerializer
-
 from django.shortcuts import redirect
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login, logout
+from django.views.decorators.csrf import csrf_exempt
+
+
+@csrf_exempt
+def register_api(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        username = data.get("username")
+        email = data.get("email")
+        password = data.get("password")
+
+        if User.objects.filter(username=username).exists():
+            return JsonResponse({"error": "Username already exists"}, status=400)
+
+        user = User.objects.create_user(username=username, email=email, password=password)
+        return JsonResponse({"message": "User registered successfully"})
+
+@csrf_exempt
+def login_api(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        username = data.get("username")
+        password = data.get("password")
+
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return JsonResponse({"message": "Login successful"})
+        else:
+            return JsonResponse({"error": "Invalid credentials"}, status=400)
+
+def logout_api(request):
+    logout(request)
+    return JsonResponse({"message": "Logged out successfully"})
+
 
 def home(request):
     return HttpResponse("""
