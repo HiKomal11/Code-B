@@ -13,18 +13,18 @@ from .views import (
 
 # Router for standard CRUD endpoints
 router = DefaultRouter()
-router.register(r"donations", DonationViewSet)
-router.register(r"payment-logs", PaymentLogViewSet)
+router.register(r"donations", DonationViewSet, basename="donation")
+router.register(r"payment-logs", PaymentLogViewSet, basename="paymentlog")
 
 # Custom payment endpoints
 custom_urlpatterns = [
-    path("razorpay/create-order/", create_order_razorpay),
-    path("razorpay/verify/", verify_payment_razorpay),
-    path("stripe/create-order/", create_order_stripe),
-    path("stripe/webhook/", webhook_stripe),
-    path("paypal/create-order/", create_order_paypal),
-    path("paypal/verify/", verify_payment_paypal),
+    path("razorpay/create-order/", create_order_razorpay, name="create_order_razorpay"),
+    path("razorpay/verify/", verify_payment_razorpay, name="verify_payment_razorpay"),
+    path("stripe/create-order/", create_order_stripe, name="create_order_stripe"),
+    path("stripe/webhook/", webhook_stripe, name="webhook_stripe"),
+    path("paypal/create-order/", create_order_paypal, name="create_order_paypal"),
+    path("paypal/verify/", verify_payment_paypal, name="verify_payment_paypal"),
 ]
 
-# Combine both
-urlpatterns = router.urls + custom_urlpatterns
+# Combine router + custom endpoints
+urlpatterns = custom_urlpatterns + router.urls

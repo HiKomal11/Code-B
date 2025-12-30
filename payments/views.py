@@ -14,41 +14,70 @@ from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.csrf import csrf_exempt
 
 
+
+# ✅ Import CustomUser instead of default User
+from accounts.models import CustomUser
+
 @csrf_exempt
 def register_api(request):
     if request.method == "POST":
-        data = json.loads(request.body)
-        username = data.get("username")
-        email = data.get("email")
-        password = data.get("password")
+        try:
+            data = json.loads(request.body)
+            print("Register payload:", data)  # ✅ log input
 
-        if User.objects.filter(username=username).exists():
-            return JsonResponse({"error": "Username already exists"}, status=400)
+            email = data.get("email")
+            username = data.get("username")
+            password = data.get("password")
 
-        user = User.objects.create_user(username=username, email=email, password=password)
+            if not email or not password:
+                return JsonResponse({"error": "Email and password are required"}, status=400)
 
-        return JsonResponse({
-            "message": "User registered successfully",
-            "isAdmin": user.is_staff,   # ✅ include role info
-            "role": "admin" if user.is_staff else "user"
-        })
+            if CustomUser.objects.filter(email=email).exists():
+                return JsonResponse({"error": "Email already exists"}, status=400)
+
+            user = CustomUser.objects.create_user(
+                email=email,
+                username=username,
+                password=password
+            )
+
+            print("User created:", user.email)  # ✅ log success
+
+            return JsonResponse({
+                "message": "User registered successfully",
+                "isAdmin": user.role == "admin",
+                "role": user.role
+            })
+        except Exception as e:
+            print("Register error:", str(e))  # ✅ log error
+            return JsonResponse({"error": str(e)}, status=500)
+
+
 @csrf_exempt
 def login_api(request):
     if request.method == "POST":
-        data = json.loads(request.body)
-        username = data.get("username")
-        password = data.get("password")
+        try:
+            data = json.loads(request.body)
+            email = data.get("email")
+            password = data.get("password")
 
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return JsonResponse({
-                "message": "Login successful",
-                "isAdmin": user.is_staff,   # ✅ include role info
-                "role": "admin" if user.is_staff else "user"
-            })
-        else:
-            return JsonResponse({"error": "Invalid credentials"}, status=400)
+            try:
+                user = CustomUser.objects.get(email=email)
+            except CustomUser.DoesNotExist:
+                return JsonResponse({"error": "Invalid credentials"}, status=400)
+
+            if user.check_password(password):
+                login(request, user)
+                return JsonResponse({
+                    "message": "Login successful",
+                    "isAdmin": user.role == "admin",
+                    "role": user.role
+                })
+            else:
+                return JsonResponse({"error": "Invalid credentials"}, status=400)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+
 
 def logout_api(request):
     logout(request)
