@@ -26,8 +26,12 @@ def register_api(request):
             return JsonResponse({"error": "Username already exists"}, status=400)
 
         user = User.objects.create_user(username=username, email=email, password=password)
-        return JsonResponse({"message": "User registered successfully"})
 
+        return JsonResponse({
+            "message": "User registered successfully",
+            "isAdmin": user.is_staff,   # ✅ include role info
+            "role": "admin" if user.is_staff else "user"
+        })
 @csrf_exempt
 def login_api(request):
     if request.method == "POST":
@@ -38,7 +42,11 @@ def login_api(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return JsonResponse({"message": "Login successful"})
+            return JsonResponse({
+                "message": "Login successful",
+                "isAdmin": user.is_staff,   # ✅ include role info
+                "role": "admin" if user.is_staff else "user"
+            })
         else:
             return JsonResponse({"error": "Invalid credentials"}, status=400)
 
