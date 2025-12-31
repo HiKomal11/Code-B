@@ -3,16 +3,27 @@ from django.utils.translation import gettext_lazy as _
 
 
 
+
 class SiteContent(models.Model):
-    title = models.CharField(max_length=100, default="Mission & Vision")
+    title = models.CharField(max_length=100, default="About Us")
     mission = models.TextField()
     vision = models.TextField()
+    story_intro = models.TextField(blank=True, null=True)
     banner_image = models.ImageField(upload_to="site_images/", blank=True, null=True)
+
+    # New fields
+    core_values = models.TextField(
+        help_text="Enter core values separated by semicolons (;)", blank=True, null=True
+    )
+    programs = models.TextField(
+        help_text="Enter programs separated by semicolons (;)", blank=True, null=True
+    )
 
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.title
+
 
 class NGOProfile(models.Model):
     name = models.CharField(max_length=200, verbose_name=_("Name"))

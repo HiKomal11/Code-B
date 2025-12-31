@@ -10,9 +10,18 @@ class NGOProfileSerializer(serializers.ModelSerializer):
 
 
 class SiteContentSerializer(serializers.ModelSerializer):
+    core_values = serializers.SerializerMethodField()
+    programs = serializers.SerializerMethodField()
+
     class Meta:
         model = SiteContent
-        fields = ["id", "mission", "vision", "banner_image", "updated_at"]
+        fields = ["id", "title", "mission", "vision", "story_intro", "banner_image", "core_values", "programs", "updated_at"]
+
+    def get_core_values(self, obj):
+        return obj.core_values.split(";") if obj.core_values else []
+
+    def get_programs(self, obj):
+        return obj.programs.split(";") if obj.programs else []
 
 class SubscriptionSerializer(serializers.ModelSerializer):
     class Meta:

@@ -9,6 +9,14 @@ admin.site.register(NGOProfile)
 @admin.register(SiteContent)
 class SiteContentAdmin(admin.ModelAdmin):
     list_display = ("title", "updated_at")
+    fieldsets = (
+        (None, {
+            "fields": ("title", "mission", "vision", "story_intro", "banner_image")
+        }),
+        ("Additional Info", {
+            "fields": ("core_values", "programs")
+        }),
+    )
 
 @admin.register(ContactMessage)
 class ContactMessageAdmin(admin.ModelAdmin):
