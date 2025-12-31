@@ -2,9 +2,13 @@ from django.contrib import admin
 from .models import NGOProfile   
 from .models import ContactMessage
 from .models import Campaign, CampaignParticipation, Subscription
+from .models import SiteContent
 
 admin.site.register(NGOProfile)
 
+@admin.register(SiteContent)
+class SiteContentAdmin(admin.ModelAdmin):
+    list_display = ("title", "updated_at")
 
 @admin.register(ContactMessage)
 class ContactMessageAdmin(admin.ModelAdmin):

@@ -1,6 +1,19 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+
+
+class SiteContent(models.Model):
+    title = models.CharField(max_length=100, default="Mission & Vision")
+    mission = models.TextField()
+    vision = models.TextField()
+    banner_image = models.ImageField(upload_to="site_images/", blank=True, null=True)
+
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.title
+
 class NGOProfile(models.Model):
     name = models.CharField(max_length=200, verbose_name=_("Name"))
     mission = models.TextField(verbose_name=_("Mission"))

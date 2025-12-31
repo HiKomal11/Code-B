@@ -6,9 +6,10 @@ from rest_framework.permissions import AllowAny
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.contrib.auth import get_user_model
+from rest_framework import viewsets, permissions
+from .models import Subscription, Campaign, CampaignParticipation, Media, ContactMessage,  SiteContent
+from .serializers import SubscriptionSerializer, CampaignSerializer, CampaignParticipationSerializer, MediaSerializer, SiteContentSerializer
 
-from .models import Subscription, Campaign, CampaignParticipation, Media, ContactMessage
-from .serializers import SubscriptionSerializer, CampaignSerializer, CampaignParticipationSerializer, MediaSerializer
 
 @api_view(["GET"])
 def auth_status(request):
@@ -50,6 +51,23 @@ def subscribe(request):
         subs = Subscription.objects.all().order_by("-subscribed_at")
         serializer = SubscriptionSerializer(subs, many=True)
         return Response(serializer.data)
+
+
+
+class IsAdminOrReadOnly(permissions.BasePermission):
+    """
+    Custom permission: only admins can edit, others can read.
+    """
+    def has_permission(self, request, view):
+        # SAFE_METHODS = GET, HEAD, OPTIONS
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        return request.user and request.user.is_staff
+
+class SiteContentViewSet(viewsets.ModelViewSet):
+    queryset = SiteContent.objects.all()
+    serializer_class = SiteContentSerializer
+    permission_classes = [IsAdminOrReadOnly]
 
 class SubscriptionViewSet(ModelViewSet):
     queryset = Subscription.objects.all().order_by("-subscribed_at")

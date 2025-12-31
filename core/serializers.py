@@ -1,13 +1,18 @@
 from rest_framework import serializers
 from .models import NGOProfile
 from .models import Media
-from .models import Subscription
+from .models import Subscription, SiteContent
 from .models import CampaignParticipation, Campaign
 class NGOProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = NGOProfile
         fields = "__all__"
 
+
+class SiteContentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SiteContent
+        fields = ["id", "mission", "vision", "banner_image", "updated_at"]
 
 class SubscriptionSerializer(serializers.ModelSerializer):
     class Meta:
